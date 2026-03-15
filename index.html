@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Jogo da Velha LOONA OT12</title>
+<style>
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background: #1b0b2c;
+    font-family: Arial, sans-serif;
+    color: white;
+}
+h1 {
+    font-size: 36px;
+    color: #d40ce8;
+    margin-bottom: 18px;
+}
+#board {
+    display: grid;
+    grid-template-columns: repeat(3, 110px);
+    grid-template-rows: repeat(3, 110px);
+    gap: 6px;
+}
+.cell {
+    width: 110px;
+    height: 110px;
+    background: #0d021a;
+    border: 3px solid #9b3cff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+.cell img {
+    max-width: 100%;
+    max-height: 100%;
+    border-radius: 8px;
+}
+#reset {
+    margin-top: 22px;
+    padding: 10px 24px;
+    background: #9b3cff;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    color: white;
+    border-radius: 6px;
+}
+</style>
+</head>
+<body>
+
+<h1>🟣 Jogo da Velha LOONA OT12</h1>
+<div id="board"></div>
+<button id="reset">🔄 Reiniciar</button>
+
+<script>
+// Fotos de cada integrante (URLs públicas do fandom)
+const integrantes = [
+  "https://static.wikia.nocookie.net/loonatheworld/images/0/0d/Heejin.png",    // HeeJin
+  "https://static.wikia.nocookie.net/loonatheworld/images/4/44/Hyunjin.png",   // HyunJin
+  "https://static.wikia.nocookie.net/loonatheworld/images/b/b9/HaSeul.png",    // HaSeul
+  "https://static.wikia.nocookie.net/loonatheworld/images/1/10/YeoJin.png",    // YeoJin
+  "https://static.wikia.nocookie.net/loonatheworld/images/5/55/Vivi.png",      // ViVi
+  "https://static.wikia.nocookie.net/loonatheworld/images/2/25/KimLip.png",    // Kim Lip
+  "https://static.wikia.nocookie.net/loonatheworld/images/1/14/JinSoul.png",   // JinSoul
+  "https://static.wikia.nocookie.net/loonatheworld/images/c/cb/Choerry.png",   // Choerry
+  "https://static.wikia.nocookie.net/loonatheworld/images/4/49/Yves.png",      // Yves
+  "https://static.wikia.nocookie.net/loonatheworld/images/f/fb/Chuu.png",      // Chuu
+  "https://static.wikia.nocookie.net/loonatheworld/images/4/45/GoWon.png",     // Go Won
+  "https://static.wikia.nocookie.net/loonatheworld/images/3/33/OliviaHye.png" // Olivia Hye
+];
+
+const board = document.getElementById('board');
+const resetBtn = document.getElementById('reset');
+let turn = 'X';
+let gameOver = false;
+
+// criar 9 células
+for(let i=0;i<9;i++){
+    const cell = document.createElement('div');
+    cell.className = "cell";
+    cell.addEventListener('click', () => makeMove(cell));
+    board.appendChild(cell);
+}
+
+// função de jogar
+function makeMove(cell){
+    if(cell.innerHTML !== "" || gameOver) return;
+    // escolher integrante aleatório pra vez
+    const img = document.createElement('img');
+    const index = Math.floor(Math.random() * integrantes.length);
+    img.src = integrantes[index];
+    cell.appendChild(img);
+    checkWinner();
+    turn = turn === 'X' ? 'O' : 'X';
+}
+
+// checar vitória
+function checkWinner(){
+    const cells = document.querySelectorAll('.cell');
+    const combos = [
+        [0,1,2],[3,4,5],[6,7,8],
+        [0,3,6],[1,4,7],[2,5,8],
+        [0,4,8],[2,4,6]
+    ];
+    for(const c of combos){
+        const [a,b,c2] = c;
+        if(cells[a].innerHTML &&
+           cells[a].innerHTML === cells[b].innerHTML &&
+           cells[a].innerHTML === cells[c2].innerHTML){
+            setTimeout(()=>alert(${turn} venceu! 🏆),100);
+            gameOver=true;
+            return;
+        }
+    }
+    if([...cells].every(c=>c.innerHTML!=="")){
+        setTimeout(()=>alert("Empate! 🤝"),100);
+        gameOver=true;
+    }
+}
+
+// reiniciar
+resetBtn.addEventListener('click',()=>{
+    document.querySelectorAll('.cell').forEach(c=>c.innerHTML="");
+    turn='X';
+    gameOver=false;
+});
+</script>
+
+</body>
+</html>
